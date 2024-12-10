@@ -4,3 +4,4 @@ pandas
 pydantic
 jinja2
 scikit-learn
+joblib

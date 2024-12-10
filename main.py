@@ -3,16 +3,16 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import uvicorn
-import pickle
+import joblib
 import pandas as pd
 from pydantic import BaseModel
 
 # Load the trained model (assumes model.pkl is in the same directory)
-try:
-    with open("model.pkl", "rb") as f:
-        model = pickle.load(f)
-except:
-    model = None
+
+model = joblib.load('rf_model_best.pkl')
+encoder = joblib.load('one_hot_encoder.pkl')
+scaler = joblib.load('standard_scaler.pkl')
+
 
 app = FastAPI()
 
@@ -21,6 +21,9 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Set up Jinja2 templates
 templates = Jinja2Templates(directory="templates")
+
+categorical_features = ['Area', 'Item']
+numerical_features = ['average_rain_fall_mm_per_year', 'pesticides_tonnes', 'avg_temp']
 
 # For demonstration, define some allowed countries and items
 AREAS = ['Albania',
@@ -155,15 +158,26 @@ async def predict(input_data: PredictionInput):
         "Area": input_data.Area,
         "Item": input_data.item,
         "Year": input_data.year,
-        "average_rainfall_mm_per_year": input_data.average_rainfall_mm_per_year,
+        "average_rain_fall_mm_per_year": input_data.average_rainfall_mm_per_year,
         "pesticides_tonnes": input_data.pesticides_tonnes,
         "avg_temp": input_data.avg_temp
     }])
-    
+
+    encoded_categories = encoder.transform(df[categorical_features])
+    scaled_numericals = scaler.transform(df[numerical_features])
+
+    # Combine all features into a single dataset
+    X = pd.concat(
+    [
+        pd.DataFrame(encoded_categories, columns=encoder.get_feature_names_out(categorical_features)),
+        pd.DataFrame(scaled_numericals, columns=numerical_features),
+    ],
+    axis=1,
+    )
     # Make prediction
-    # prediction = model.predict(df)
-    # predicted_yield = prediction[0]
-    predicted_yield = 1000.00
+    prediction = model.predict(X)
+    predicted_yield = prediction[0]
+    # predicted_yield = 1000.00
     
     return {"predicted_yield": predicted_yield}
 
