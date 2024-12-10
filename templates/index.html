@@ -55,9 +55,9 @@
     <div class="container">
         <h1>Crop Yield Prediction</h1>
         <form id="predictionForm">
-            <label for="country">Country</label>
-            <select id="country" name="country">
-                {% for c in countries %}
+            <label for="Area">Area</label>
+            <select id="Area" name="Area">
+                {% for c in Areas %}
                 <option value="{{ c }}">{{ c }}</option>
                 {% endfor %}
             </select>
@@ -96,7 +96,7 @@
             const formData = new FormData(form);
 
             const data = {
-                country: formData.get('country'),
+                Area: formData.get('Area'),
                 item: formData.get('item'),
                 year: parseInt(formData.get('year')),
                 average_rainfall_mm_per_year: parseFloat(formData.get('average_rainfall_mm_per_year')),
