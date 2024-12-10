@@ -1,7 +1,7 @@
 services:
   # A Docker web service
   - type: web
-    name: fastapi-example
+    name: fastapi-crop-yield-prediction
     runtime: python
     plan: free
     autoDeploy: false

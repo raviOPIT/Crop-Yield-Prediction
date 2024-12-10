@@ -1,1 +1,6 @@
-fastapi[all]
+fastapi
+uvicorn[standard]
+pandas
+pydantic
+jinja2
+scikit-learn
