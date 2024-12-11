@@ -12,7 +12,7 @@ from pydantic import BaseModel
 # Load the trained model (assumes model.pkl is in the same directory)
 
 # Function to download the file from Google Drive
-def download_from_google_drive():
+def download_model_from_google_drive():
     try:
         url = "https://drive.google.com/uc?id=1FhTHdUunq6gemJ5LJUlMV3SagBI5ouWd"
         output = "voting.pkl"
@@ -21,23 +21,61 @@ def download_from_google_drive():
     except:
         print("model download failed")
 
-filename = "voting.pkl"
+def download_encoder_from_google_drive():
+    try:
+        url = "https://drive.google.com/uc?id=1-xp8GnHMtUPsN1HNnbVYtjyBQiLZ4jNY"
+        output = "one_hot_encoder.pkl"
+
+        gdown.download(url, output, quiet=False)
+    except:
+        print("encoder download failed")
+
+def download_scaler_from_google_drive():
+
+    try:
+        url = "https://drive.google.com/uc?id=1Oa8LokajpqE2wygzAtO98ENb8oZ6JrbE"
+        output = "standard_scaler.pkl"
+
+        gdown.download(url, output, quiet=False)
+    except:
+        print("scaler download failed")
+
+filename_model = "voting.pkl"
+filename_encoder = "one_hot_encoder.pkl"
+filename_scaler = "standard_scaler.pkl"
 
 # Check if the file exists, else download it
-if not os.path.exists(filename):
+if not os.path.exists(filename_model):
     print("Downloading Model")
-    download_from_google_drive()
+    download_model_from_google_drive()
+# Check if the file exists, else download it
+if not os.path.exists(filename_encoder):
+    print("Downloading Encoder")
+    download_encoder_from_google_drive()
+# Check if the file exists, else download it
+if not os.path.exists(filename_scaler):
+    print("Downloading Scaler")
+    download_scaler_from_google_drive()
 
 # Load the file using joblib
 try:
-    model = joblib.load(filename)
+    model = joblib.load(filename_model)
     print("Model loaded successfully!")
 except Exception as e:
     print(f"Error loading the model: {e}")
 
-# model = joblib.load('voting.pkl')
-encoder = joblib.load('one_hot_encoder.pkl')
-scaler = joblib.load('standard_scaler.pkl')
+try:
+    encoder = joblib.load('one_hot_encoder.pkl')
+    print("encoder loaded successfully!")
+except Exception as e:
+    print(f"Error loading the encoder: {e}")
+
+try:
+    scaler = joblib.load('standard_scaler.pkl')
+    print("scaler loaded successfully!")
+except Exception as e:
+    print(f"Error loading the scaler: {e}")
+
 
 
 app = FastAPI()
