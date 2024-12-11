@@ -9,7 +9,7 @@ from pydantic import BaseModel
 
 # Load the trained model (assumes model.pkl is in the same directory)
 
-model = joblib.load('rf_model_best.pkl')
+model = joblib.load('voting.pkl')
 encoder = joblib.load('one_hot_encoder.pkl')
 scaler = joblib.load('standard_scaler.pkl')
 
