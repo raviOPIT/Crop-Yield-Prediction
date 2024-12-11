@@ -1,3 +1,5 @@
+import os
+import gdown
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -9,7 +11,31 @@ from pydantic import BaseModel
 
 # Load the trained model (assumes model.pkl is in the same directory)
 
-model = joblib.load('voting.pkl')
+# Function to download the file from Google Drive
+def download_from_google_drive():
+    try:
+        url = "https://drive.google.com/uc?id=1FhTHdUunq6gemJ5LJUlMV3SagBI5ouWd"
+        output = "voting.pkl"
+
+        gdown.download(url, output, quiet=False)
+    except:
+        print("model download failed")
+
+filename = "voting.pkl"
+
+# Check if the file exists, else download it
+if not os.path.exists(filename):
+    print("Downloading Model")
+    download_from_google_drive()
+
+# Load the file using joblib
+try:
+    model = joblib.load(filename)
+    print("Model loaded successfully!")
+except Exception as e:
+    print(f"Error loading the model: {e}")
+
+# model = joblib.load('voting.pkl')
 encoder = joblib.load('one_hot_encoder.pkl')
 scaler = joblib.load('standard_scaler.pkl')
 
@@ -181,5 +207,5 @@ async def predict(input_data: PredictionInput):
     
     return {"predicted_yield": predicted_yield}
 
-# if __name__ == "__main__":
-#     uvicorn.run(app, host="0.0.0.0", port=8000)
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)

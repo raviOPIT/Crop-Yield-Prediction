@@ -1,8 +1,8 @@
 fastapi
-uvicorn[standard]
 pandas
 pydantic
 jinja2
 scikit-learn==1.3.2
-catboost
+joblib==1.3.2
+gdown
 hypercorn
