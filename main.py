@@ -207,5 +207,5 @@ async def predict(input_data: PredictionInput):
     
     return {"predicted_yield": predicted_yield}
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+# if __name__ == "__main__":
+#     uvicorn.run(app, host="0.0.0.0", port=8000)
